@@ -1,6 +1,6 @@
 streamlit
-mysql-connector-python
 pymysql
+mysql-connector-python
 pandas
 numpy
 scikit-learn
@@ -9,3 +9,4 @@ scipy
 folium
 geopy
 streamlit-option-menu
+#test
