@@ -1,10 +1,11 @@
 streamlit
-streamlit-option-menu
 mysql-connector-python
+pymysql
+pandas
+numpy
+scikit-learn
+matplotlib
+scipy
 folium
 geopy
-matplotlib
-numpy
-pandas
-scikit-learn
-scipy
+streamlit-option-menu
