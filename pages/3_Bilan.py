@@ -8,6 +8,21 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from matplotlib.colors import to_hex, ListedColormap
 from db_connection import get_connection
+import mysql.connector
+import pandas as pd
+import streamlit as st
+
+# Connexion à ta base MySQL (à adapter selon ton setup)
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="ton_mot_de_passe",
+    database="secto"
+)
+
+# Lecture directe depuis la base
+chefs_df = pd.read_sql("SELECT * FROM chefs_secteurs", conn)
+pdv_df = pd.read_sql("SELECT * FROM pdv", conn)
 
 # Configuration initiale de la page
 #st.set_page_config(page_title="Analyse Sectorielle", layout="wide")
