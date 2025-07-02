@@ -134,7 +134,12 @@ total_ca_potentiel = ca_potentiel_per_sector['CA Potentiel'].sum()
 # Calcul du temps passé clientèle par secteur
 # DEBUG : Afficher les colonnes du DataFrame stores
 st.write("Colonnes disponibles :", stores.columns.tolist())
-temps_clientele_per_sector = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='Temps passé clientèle')
+# temps_clientele_per_sector = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='Temps passé clientèle')
+# TEST DEPLOIEMENT 
+temps_clientele_per_sector = stores.copy()
+temps_clientele_per_sector['Poids'] = temps_clientele_per_sector['Temps'] * temps_clientele_per_sector['Frequence']
+temps_clientele_per_sector = temps_clientele_per_sector.groupby('Code_secteur')['Poids'].sum().reset_index(name='Temps passé clientèle')
+
 
 # Calcul du temps terrain effectif par secteur pour chaque manager
 temps_terrain_effectif_per_manager = (managers['Nb_jour_terrain_par_an'] * managers['Nb_heure_par_jour'] * 60).reset_index(name='Temps terrain effectif')
