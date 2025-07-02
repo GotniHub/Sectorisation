@@ -39,6 +39,18 @@ def get_connection():
 #         print(f"❌ ERREUR INATTENDUE : {e}")  # DEBUG
 #         st.error(f"❌ Erreur inattendue : {e}")
 #         return None
+def check_table_empty(table_name):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+        count = cursor.fetchone()[0]
+        cursor.close()
+        conn.close()
+        return count
+    except Exception as e:
+        print(f"Erreur lors de la vérification de la table {table_name}: {e}")
+        return None
     
 def clear_table_RH():
     """Vide la table 'rh' en supprimant toutes les données."""
