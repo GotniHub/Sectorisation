@@ -488,7 +488,7 @@ with left_column:
     st.subheader("Carte Sans Optimisation 🗺️")
     # Display the map in Streamlit
     # # Toujours initialiser la carte, même si elle est vide
-    # map = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
+    map = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
 
     # Ton code d'ajout de markers ou de calques vient ici
     # (ajoute les markers uniquement si selected_sector ou les données sont valides)
