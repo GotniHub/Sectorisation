@@ -132,6 +132,7 @@ ca_potentiel_per_sector = stores.groupby('Code_secteur')['Potentiel'].sum().rese
 total_ca_potentiel = ca_potentiel_per_sector['CA Potentiel'].sum()
 
 # Calcul du temps passé clientèle par secteur
+stores.columns = stores.columns.str.strip().str.replace(' ', '_')  # nettoyage noms de colonnes
 temps_clientele_per_sector = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='Temps passé clientèle')
 
 # Calcul du temps terrain effectif par secteur pour chaque manager
