@@ -121,6 +121,7 @@ def check_table_empty(table_name="rh"):
         query = f"SELECT COUNT(*) FROM {table_name};"
         cursor.execute(query)
         row_count = cursor.fetchone()["COUNT(*)"]
+        # row_count = cursor.fetchone()[0] 
         return row_count
     except Exception as e:
         st.error(f"❌ Erreur lors de la vérification de la table '{table_name}' : {e}")
