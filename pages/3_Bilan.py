@@ -501,6 +501,9 @@ with right_column:
 
 
     def calculate_new_charge(stores, managers):
+            # Convertir en float pour éviter les erreurs de type
+        stores['Temps'] = pd.to_numeric(stores['Temps'], errors='coerce')
+        stores['Frequence'] = pd.to_numeric(stores['Frequence'], errors='coerce')
         temps_clientele_per_sector_new = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='New_Temps passé clientèle')
 
         charge_per_sector_new = pd.merge(temps_clientele_per_sector_new, managers[['Code_secteur', 'Nb_jour_terrain_par_an', 'Nb_heure_par_jour']], on='Code_secteur', how='left')
