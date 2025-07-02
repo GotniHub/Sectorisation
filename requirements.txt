@@ -9,4 +9,5 @@ scipy
 folium
 geopy
 streamlit-option-menu
+openpyxl
 #test
