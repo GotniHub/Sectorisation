@@ -642,6 +642,7 @@ with right_column:
 
     else:
                 # Target number of stores per manager (assuming roughly equal distribution is desired)
+        num_clusters = max(1, num_clusters)  # assure-toi qu'on divise jamais par zéro
         target_per_manager = stores.shape[0] // num_clusters
 
 
