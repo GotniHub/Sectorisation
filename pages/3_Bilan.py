@@ -217,7 +217,7 @@ else:
     commercials_needed = total_commercials
     stores_needed = total_stores
     ca_potentiel_display = format_millions(total_ca_potentiel)
-    temps_total_effectif = charge_per_sector['NB_jour_terrain_par_an'].sum()
+    temps_total_effectif = charge_per_sector['Nb_jour_terrain_par_an'].sum()
 
     if temps_total_effectif > 0:
         charge_needed = (charge_per_sector['Temps passé clientèle'].sum() + temps_route) / temps_total_effectif * 100
