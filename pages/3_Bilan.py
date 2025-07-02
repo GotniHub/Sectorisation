@@ -217,14 +217,8 @@ else:
     commercials_needed = total_commercials
     stores_needed = total_stores
     ca_potentiel_display = format_millions(total_ca_potentiel)
-    # charge_needed = (charge_per_sector['Temps passé clientèle'].sum() + temps_route) / charge_per_sector['Temps terrain effectif'].sum() * 100
-    temps_total_effectif = charge_per_sector['Temps terrain effectif (heures)'].sum()
+    #charge_needed = (charge_per_sector['Temps passé clientèle'].sum() + temps_route) / charge_per_sector['Temps terrain effectif'].sum() * 100
 
-    if temps_total_effectif > 0:
-        charge_needed = ((charge_per_sector['Temps passé clientèle'].sum() + temps_route) / temps_total_effectif) * 100
-    else:
-        st.warning("Aucun temps terrain effectif trouvé. Impossible de calculer la charge nécessaire.")
-        charge_needed = 0
 
 
 # Formater la charge en pourcentage
