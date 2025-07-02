@@ -645,6 +645,8 @@ with right_column:
         num_clusters = max(1, num_clusters)  # assure-toi qu'on divise jamais par zéro
         target_per_manager = stores.shape[0] // num_clusters
 
+        if managers.empty:
+            st.error("Aucun manager n'est disponible. Impossible d'attribuer les secteurs.")
 
         def find_nearest_manager(cluster_centroid, managers):
             if managers.empty:
@@ -658,8 +660,15 @@ with right_column:
             except Exception as e:
                 return pd.Series([None, None, None], index=['Manager Secteur', 'Manager Latitude', 'Manager Longitude'])
 
-        stores[['Code_secteur', 'Manager Latitude', 'Manager Longitude']] = stores.apply(
-            lambda x: find_nearest_manager((x['lat'], x['long']), managers), axis=1, result_type='expand')
+        # stores[['Code_secteur', 'Manager Latitude', 'Manager Longitude']] = stores.apply(
+        #     lambda x: find_nearest_manager((x['lat'], x['long']), managers), axis=1, result_type='expand')
+        # Vérifie que 'lat' et 'long' n'ont pas de NaN
+        if stores['lat'].isnull().any() or stores['long'].isnull().any():
+            st.error("Certains points de vente n'ont pas de coordonnées valides (lat/long).")
+        else:
+            stores[['Code_secteur', 'Manager Latitude', 'Manager Longitude']] = stores.apply(
+                lambda x: find_nearest_manager((x['lat'], x['long']), managers), axis=1, result_type='expand'
+            )
 
         unique_sectors = stores['Code_secteur'].unique()
         custom_cmap = blend_cmap('Paired', 'tab20b', len(unique_sectors))
