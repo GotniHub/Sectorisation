@@ -649,26 +649,26 @@ with right_column:
             st.error("Aucun manager n'est disponible. Impossible d'attribuer les secteurs.")
 
         def find_nearest_manager(cluster_centroid, managers):
-            if managers.empty:
-                return pd.Series([None, None, None], index=['Manager Secteur', 'Manager Latitude', 'Manager Longitude'])
-            try:
-                distances = cdist([cluster_centroid], managers[['Latitude', 'Longitude']])
-                nearest_manager_idx = distances.argmin()
-                manager = managers.iloc[nearest_manager_idx]
-                return pd.Series([manager['Code_secteur'], manager['Latitude'], manager['Longitude']],
-                                index=['Manager Secteur', 'Manager Latitude', 'Manager Longitude'])
-            except Exception as e:
-                return pd.Series([None, None, None], index=['Manager Secteur', 'Manager Latitude', 'Manager Longitude'])
+            distances = cdist([cluster_centroid], managers[['Latitude', 'Longitude']])
+            nearest_manager_idx = distances.argmin()
+            manager = managers.iloc[nearest_manager_idx]
+            return pd.Series([manager['Code_secteur'], manager['Latitude'], manager['Longitude']],
+                            index=['Code_secteur', 'Manager Latitude', 'Manager Longitude'])
 
-        # stores[['Code_secteur', 'Manager Latitude', 'Manager Longitude']] = stores.apply(
-        #     lambda x: find_nearest_manager((x['lat'], x['long']), managers), axis=1, result_type='expand')
-        # Vérifie que 'lat' et 'long' n'ont pas de NaN
-        if stores['lat'].isnull().any() or stores['long'].isnull().any():
-            st.error("Certains points de vente n'ont pas de coordonnées valides (lat/long).")
+        # Vérification avant le .apply()
+        if stores.empty:
+            st.error("Le fichier des points de vente est vide.")
+        elif 'lat' not in stores.columns or 'long' not in stores.columns:
+            st.error("Les colonnes 'lat' et 'long' sont manquantes dans les données.")
+        elif stores[['lat', 'long']].isnull().any().any():
+            st.error("Certaines coordonnées géographiques (lat/long) sont manquantes dans vos points de vente.")
+        elif managers.empty:
+            st.error("Le fichier des managers est vide.")
         else:
             stores[['Code_secteur', 'Manager Latitude', 'Manager Longitude']] = stores.apply(
                 lambda x: find_nearest_manager((x['lat'], x['long']), managers), axis=1, result_type='expand'
             )
+
 
         unique_sectors = stores['Code_secteur'].unique()
         custom_cmap = blend_cmap('Paired', 'tab20b', len(unique_sectors))
