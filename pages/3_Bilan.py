@@ -94,6 +94,11 @@ def color_charge(val):
 print("Columns in managers:", managers.columns)
 print("Columns in stores:", stores.columns)
 
+st.subheader("Colonnes du fichier PDV")
+st.write(stores.columns.tolist())
+st.write("Aperçu des données :")
+st.dataframe(stores.head())
+
 # Convert latitude and longitude from string to numeric (float)
 stores['lat'] = pd.to_numeric(stores['lat'], errors='coerce')
 stores['long'] = pd.to_numeric(stores['long'], errors='coerce')
