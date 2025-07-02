@@ -487,8 +487,8 @@ with left_column:
     st.write("")
     st.subheader("Carte Sans Optimisation 🗺️")
     # Display the map in Streamlit
-    # Toujours initialiser la carte, même si elle est vide
-    map = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
+    # # Toujours initialiser la carte, même si elle est vide
+    # map = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
 
     # Ton code d'ajout de markers ou de calques vient ici
     # (ajoute les markers uniquement si selected_sector ou les données sont valides)
@@ -757,7 +757,13 @@ managers_clean['PDV affectés'] = managers_clean['PDV affectés'].astype(int)
 managers_clean['Visites nécessaires'] = managers_clean['Visites nécessaires'].astype(int)
 
 # Calcul de la charge
-temps_clientele_per_sector = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='Temps passé clientèle')
+# temps_clientele_per_sector = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='Temps passé clientèle')
+if 'Temps' in stores.columns and 'Frequence' in stores.columns:
+    stores['Poids'] = pd.to_numeric(stores['Temps'], errors='coerce') * pd.to_numeric(stores['Frequence'], errors='coerce')
+    temps_clientele_per_sector = stores.groupby('Code_secteur')['Poids'].sum().reset_index(name='Temps passé clientèle')
+else:
+    temps_clientele_per_sector = pd.DataFrame(columns=['Code_secteur', 'Temps passé clientèle'])
+
 charge_calc = pd.merge(temps_clientele_per_sector, managers_clean[['Code_secteur', 'Nb_jour_terrain_par_an', 'Nb_heure_par_jour']], on='Code_secteur', how='left')
 charge_calc['Temps terrain effectif'] = charge_calc['Nb_jour_terrain_par_an'] * charge_calc['Nb_heure_par_jour'] * 60
 charge_calc['Charge'] = ((charge_calc['Temps passé clientèle'] + 25000) / charge_calc['Temps terrain effectif']) * 100
