@@ -764,7 +764,21 @@ if 'Temps' in stores.columns and 'Frequence' in stores.columns:
 else:
     temps_clientele_per_sector = pd.DataFrame(columns=['Code_secteur', 'Temps passé clientèle'])
 
-charge_calc = pd.merge(temps_clientele_per_sector, managers_clean[['Code_secteur', 'Nb_jour_terrain_par_an', 'Nb_heure_par_jour']], on='Code_secteur', how='left')
+# charge_calc = pd.merge(temps_clientele_per_sector, managers_clean[['Code_secteur', 'Nb_jour_terrain_par_an', 'Nb_heure_par_jour']], on='Code_secteur', how='left')
+cols_needed = ['Code_secteur', 'Nb_jour_terrain_par_an', 'Nb_heure_par_jour']
+missing_cols = [col for col in cols_needed if col not in managers_clean.columns]
+
+if missing_cols:
+    st.error(f"Colonnes manquantes dans managers_clean : {missing_cols}")
+    charge_calc = pd.DataFrame()  # ou None selon ton app
+else:
+    charge_calc = pd.merge(
+        temps_clientele_per_sector,
+        managers_clean[cols_needed],
+        on='Code_secteur',
+        how='left'
+    )
+
 charge_calc['Temps terrain effectif'] = charge_calc['Nb_jour_terrain_par_an'] * charge_calc['Nb_heure_par_jour'] * 60
 charge_calc['Charge'] = ((charge_calc['Temps passé clientèle'] + 25000) / charge_calc['Temps terrain effectif']) * 100
 managers_clean = pd.merge(managers_clean, charge_calc[['Code_secteur', 'Charge']], on='Code_secteur', how='left')
