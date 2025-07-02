@@ -647,16 +647,18 @@ with right_column:
 
 
         def find_nearest_manager(cluster_centroid, managers):
-            distances = cdist([cluster_centroid], managers[['Latitude', 'Longitude']])
-            nearest_manager_idx = distances.argmin()
-            manager = managers.iloc[nearest_manager_idx]
-            # return pd.Series([manager['Code_secteur'], manager['Latitude'], manager['Longitude']],
-            #                 index=['Code_secteur', 'Manager Latitude', 'Manager Longitude'])
-            return pd.Series([manager['Code_secteur'], manager['Latitude'], manager['Longitude']],
-                     index=['Manager Secteur', 'Manager Latitude', 'Manager Longitude'])
-        # stores[['Code_secteur', 'Manager Latitude', 'Manager Longitude']] = stores.apply(
-        #     lambda x: find_nearest_manager((x['lat'], x['long']), managers), axis=1, result_type='expand')
-        stores[['Manager Secteur', 'Manager Latitude', 'Manager Longitude']] = stores.apply(
+            if managers.empty:
+                return pd.Series([None, None, None], index=['Manager Secteur', 'Manager Latitude', 'Manager Longitude'])
+            try:
+                distances = cdist([cluster_centroid], managers[['Latitude', 'Longitude']])
+                nearest_manager_idx = distances.argmin()
+                manager = managers.iloc[nearest_manager_idx]
+                return pd.Series([manager['Code_secteur'], manager['Latitude'], manager['Longitude']],
+                                index=['Manager Secteur', 'Manager Latitude', 'Manager Longitude'])
+            except Exception as e:
+                return pd.Series([None, None, None], index=['Manager Secteur', 'Manager Latitude', 'Manager Longitude'])
+
+        stores[['Code_secteur', 'Manager Latitude', 'Manager Longitude']] = stores.apply(
             lambda x: find_nearest_manager((x['lat'], x['long']), managers), axis=1, result_type='expand')
 
         unique_sectors = stores['Code_secteur'].unique()
