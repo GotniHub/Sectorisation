@@ -10,4 +10,6 @@ folium
 geopy
 streamlit-option-menu
 openpyxl
+plotly
+googlemaps
 #test
