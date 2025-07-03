@@ -37,6 +37,23 @@ stores_original = load_stores_from_db()
 # Harmonisation des noms de colonnes (standardisation)
 stores_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in stores_original.columns]
 managers_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in managers_original.columns]
+managers_original = load_managers_from_db()
+stores_original = load_stores_from_db()
+
+# 🔍 DEBUG : Affichage des données brutes
+st.subheader("📦 Données brutes PDV")
+st.dataframe(stores_original)
+
+st.subheader("👤 Données brutes RH")
+st.dataframe(managers_original)
+
+# Optionnel : afficher les colonnes pour debug
+st.write("🧮 Colonnes PDV :", stores_original.columns.tolist())
+st.write("🧮 Colonnes RH :", managers_original.columns.tolist())
+
+# Harmonisation des noms de colonnes (standardisation)
+stores_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in stores_original.columns]
+managers_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in managers_original.columns]
 
 if managers_original.empty or stores_original.empty:
     st.warning("⚠️ Aucune donnée n'a été trouvée dans la base de données.")
