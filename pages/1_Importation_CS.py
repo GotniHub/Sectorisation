@@ -16,7 +16,8 @@ def load_managers_data(uploaded_file):
         sheet_name = st.selectbox("📑 Choisissez une feuille :", sheets)
 
         # Charger la feuille sélectionnée
-        data = pd.read_excel(xls, sheet_name=sheet_name)
+        data = pd.read_excel(xls, sheet_name=sheet_name, header=0)  # la 1re ligne est bien l’en-tête
+
                 # ✅ Supprimer la première ligne si elle est identique aux noms de colonnes
         # Supprimer la première ligne si elle contient les noms de colonnes
         first_row = data.iloc[0].astype(str).str.lower().str.strip()
