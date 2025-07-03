@@ -17,6 +17,9 @@ def load_stores_data(uploaded_file):
 
         # Charger la feuille sélectionnée
         data = pd.read_excel(xls, sheet_name=sheet_name)
+        # ✅ Supprimer la première ligne si elle est une copie des noms de colonnes
+        if data.iloc[0].tolist() == list(data.columns):
+            data = data.iloc[1:].reset_index(drop=True)
         return data
     else:
         return None
