@@ -178,6 +178,14 @@ def main():
                     row_count = check_table_empty()
                     if row_count is not None:
                         st.info(f"ℹ️ La table contient maintenant {row_count} enregistrements.")
+                            # 🔄 Recharger les données depuis la base pour les afficher
+                    conn = get_connection()
+                    if conn:
+                        df_rh = pd.read_sql("SELECT * FROM rh", conn)
+                        conn.close()
+
+                        st.success("✅ Voici les données désormais stockées dans la base RH :")
+                        st.dataframe(df_rh)
             else:
                 st.error("❌ Les colonnes importées ne correspondent pas à la template.")
                 missing_columns = set(expected_columns) - set(imported_columns)
