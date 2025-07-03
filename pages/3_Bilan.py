@@ -34,6 +34,9 @@ def load_stores_from_db():
 
 managers_original = load_managers_from_db()
 stores_original = load_stores_from_db()
+# Harmonisation des noms de colonnes (standardisation)
+stores_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in stores_original.columns]
+managers_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in managers_original.columns]
 
 if managers_original.empty or stores_original.empty:
     st.warning("⚠️ Aucune donnée n'a été trouvée dans la base de données.")
