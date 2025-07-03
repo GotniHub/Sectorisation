@@ -18,8 +18,14 @@ def load_managers_data(uploaded_file):
         # Charger la feuille sélectionnée
         data = pd.read_excel(xls, sheet_name=sheet_name)
                 # ✅ Supprimer la première ligne si elle est identique aux noms de colonnes
-        if data.iloc[0].tolist() == list(data.columns):
+        # Supprimer la première ligne si elle contient les noms de colonnes
+        first_row = data.iloc[0].astype(str).str.lower().str.strip()
+        columns_normalized = pd.Series(data.columns).astype(str).str.lower().str.strip()
+
+        if first_row.equals(columns_normalized):
+            st.warning("⚠️ La première ligne contenait à nouveau les noms de colonnes, elle a été supprimée.")
             data = data.iloc[1:].reset_index(drop=True)
+
         
         return data
     else:
