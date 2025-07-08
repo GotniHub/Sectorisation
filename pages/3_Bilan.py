@@ -160,11 +160,19 @@ managers['Longitude'] = pd.to_numeric(managers['Longitude'], errors='coerce')
 stores.dropna(subset=['lat', 'long'], inplace=True)
 managers.dropna(subset=['Latitude', 'Longitude'], inplace=True)
 
-# Fonction pour formater les nombres en millions
+# # Fonction pour formater les nombres en millions
+# def format_millions(number):
+#     if number >= 1e6:
+#         return f"{number / 1e6:.3f} M €"
+#     return f"{number}€"
+
 def format_millions(number):
-    if number >= 1e6:
-        return f"{number / 1e6:.3f} M €"
-    return f"{number}€"
+    try:
+        number = float(number)  # Convertit Decimal -> float si besoin
+    except:
+        return "Erreur"
+    return f"{number / 1e6:.3f} M €"
+
 
 # Calculer le nombre de visites nécessaires par secteur
 visits_per_sector = stores.groupby('Code_secteur')['Frequence'].sum().reset_index(name='Visites nécessaires')
