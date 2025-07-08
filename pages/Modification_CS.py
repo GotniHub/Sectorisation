@@ -3,20 +3,26 @@ import pandas as pd
 from db_connection import get_connection, update_database, check_table_empty
 
 def load_data_from_database():
-    """Charge les données actuelles depuis la base de données MySQL."""
+    """Charge les données actuelles depuis la base de données MySQL (table RH)."""
     conn = get_connection()
     if conn is None:
         st.error("❌ Erreur de connexion à la base de données.")
-        return None
+        return pd.DataFrame()
 
     try:
-        df = pd.read_sql("SELECT * FROM rh", conn)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM rh")
+        columns = [col[0] for col in cursor.description]
+        data = cursor.fetchall()
+        df = pd.DataFrame(data, columns=columns)
         return df
     except Exception as e:
-        st.error(f"❌ Erreur lors du chargement des données : {e}")
-        return None
+        st.error(f"❌ Erreur lors du chargement des données RH : {e}")
+        return pd.DataFrame()
     finally:
+        cursor.close()
         conn.close()
+
 
 def update_selected_rows(selected_rows):
     """Met à jour les lignes sélectionnées dans la base de données."""

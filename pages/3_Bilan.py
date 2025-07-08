@@ -148,14 +148,14 @@ def color_charge(val):
 #managers = pd.read_excel("CS Data.xlsx")
 #stores = pd.read_excel("Datakiss Template 2024 REVILLARS.xlsx")
 
-# Print the columns to check for the 'Code_secteur'
-print("Columns in managers:", managers.columns)
-print("Columns in stores:", stores.columns)
+# # Print the columns to check for the 'Code_secteur'
+# print("Columns in managers:", managers.columns)
+# print("Columns in stores:", stores.columns)
 
-st.subheader("Colonnes du fichier PDV")
-st.write(stores.columns.tolist())
-st.write("Aperçu des données :")
-st.dataframe(stores.head())
+# st.subheader("Colonnes du fichier PDV")
+# st.write(stores.columns.tolist())
+# st.write("Aperçu des données :")
+# st.dataframe(stores.head())
 
 # Convert latitude and longitude from string to numeric (float)
 stores['lat'] = pd.to_numeric(stores['lat'], errors='coerce')
