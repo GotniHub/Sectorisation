@@ -71,16 +71,16 @@ managers_original.columns = [col.strip().replace(" ", "_").replace("é", "e").re
 managers_original = load_managers_from_db()
 stores_original = load_stores_from_db()
 
-# 🔍 DEBUG : Affichage des données brutes
-st.subheader("📦 Données brutes PDV")
-st.dataframe(stores_original)
+# # 🔍 DEBUG : Affichage des données brutes
+# st.subheader("📦 Données brutes PDV")
+# st.dataframe(stores_original)
 
-st.subheader("👤 Données brutes RH")
-st.dataframe(managers_original)
+# st.subheader("👤 Données brutes RH")
+# st.dataframe(managers_original)
 
-# Optionnel : afficher les colonnes pour debug
-st.write("🧮 Colonnes PDV :", stores_original.columns.tolist())
-st.write("🧮 Colonnes RH :", managers_original.columns.tolist())
+# # Optionnel : afficher les colonnes pour debug
+# st.write("🧮 Colonnes PDV :", stores_original.columns.tolist())
+# st.write("🧮 Colonnes RH :", managers_original.columns.tolist())
 
 # Harmonisation des noms de colonnes (standardisation)
 stores_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in stores_original.columns]
@@ -193,14 +193,14 @@ total_ca_potentiel = float(ca_potentiel_per_sector['CA Potentiel'].sum())
 
 # Calcul du temps passé clientèle par secteur
 # DEBUG : Afficher les colonnes du DataFrame stores
-st.write("Colonnes disponibles :", stores.columns.tolist())
+# st.write("Colonnes disponibles :", stores.columns.tolist())
 # temps_clientele_per_sector = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='Temps passé clientèle')
 # TEST DEPLOIEMENT 
 temps_clientele_per_sector = stores.copy()
 temps_clientele_per_sector['Poids'] = temps_clientele_per_sector['Temps'] * temps_clientele_per_sector['Frequence']
 temps_clientele_per_sector = temps_clientele_per_sector.groupby('Code_secteur')['Poids'].sum().reset_index(name='Temps passé clientèle')
 ###############
-st.write("Colonnes managers :", managers.columns.tolist())
+# st.write("Colonnes managers :", managers.columns.tolist())
 
 # Calcul du temps terrain effectif par secteur pour chaque manager
 temps_terrain_effectif_per_manager = (managers['Nb_jour_terrain_par_an'] * managers['Nb_heure_par_jour'] * 60).reset_index(name='Temps terrain effectif')
