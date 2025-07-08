@@ -72,7 +72,18 @@ else:
     managers = managers_original.copy()
 
 stores = stores_original.copy()
+# 👇 Fonction d’anonymisation
+def anonymiser_noms(df):
+    df = df.copy()
+    df['Nom'] = 'Nom_' + df.index.astype(str)
+    df['Prenom'] = 'Prenom_' + df.index.astype(str)
+    return df
 
+# 👇 Appliquer l’anonymisation après avoir défini `managers`
+managers = anonymiser_noms(managers)
+managers_original = anonymiser_noms(managers_original)
+if 'managers_optimized' in st.session_state:
+    st.session_state.managers_optimized = anonymiser_noms(st.session_state.managers_optimized)
 print(stores_original)
 # Harmonisation des noms de colonnes (standardisation)
 stores_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in stores_original.columns]
