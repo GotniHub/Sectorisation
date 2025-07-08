@@ -1,18 +1,6 @@
 
 import streamlit as st
 import pymysql
-from sshtunnel import SSHTunnelForwarder
-
-with SSHTunnelForwarder(
-                 ('DataAdventAfrica.mysql.pythonanywhere-services.com', 3306),
-                 ssh_password="DataAdventPlusAfrica2025.",
-                 ssh_username="DataAdventAfrica",
-                 remote_bind_address=('127.0.0.1', 3306)) as server:
-                    conn = pymysql.connector.connect(host='127.0.0.1',
-                                   port=server.local_bind_port,
-                                   user='DataAdventAfrica',
-                                   passwd='advent2025admin',
-                                   db='DataAdventAfrica$secto')
 
 
 def get_connection():
