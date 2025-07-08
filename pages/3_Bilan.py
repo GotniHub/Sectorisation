@@ -180,7 +180,8 @@ total_stores = stores_per_sector['Nombre de magasins'].sum()
 
 # Calculer le CA potentiel par secteur
 ca_potentiel_per_sector = stores.groupby('Code_secteur')['Potentiel'].sum().reset_index(name='CA Potentiel')
-total_ca_potentiel = ca_potentiel_per_sector['CA Potentiel'].sum()
+# total_ca_potentiel = ca_potentiel_per_sector['CA Potentiel'].sum()
+total_ca_potentiel = float(ca_potentiel_per_sector['CA Potentiel'].sum())
 
 # Calcul du temps passé clientèle par secteur
 # DEBUG : Afficher les colonnes du DataFrame stores
