@@ -24,10 +24,23 @@ def load_managers_from_db():
         return df
     return pd.DataFrame()
 
+# def load_stores_from_db():
+#     conn = get_connection()
+#     if conn:
+#         df = pd.read_sql("SELECT * FROM pdv", conn)
+#         conn.close()
+#         return df
+#     return pd.DataFrame()
+
 def load_stores_from_db():
     conn = get_connection()
     if conn:
-        df = pd.read_sql("SELECT * FROM pdv FORMAT TabSeparatedWithNamesAndTypes", conn)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM pdv")
+        columns = [col[0] for col in cursor.description]
+        data = cursor.fetchall()
+        df = pd.DataFrame(data, columns=columns)
+        cursor.close()
         conn.close()
         return df
     return pd.DataFrame()
