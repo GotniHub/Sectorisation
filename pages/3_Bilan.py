@@ -874,9 +874,8 @@ with col_before:
 
 with col_after:
     st.markdown("### Après Optimisation")
-    st.subheader("Données détaillées générales après l'optimisation")
-    detailed_data = st.empty()
-    optimized_columns_to_display = ['Code_secteur', 'Nom', 'Prenom', 'Adresse', 'New_PDV affectés', 'New_Visites nécessaires', 'New_Charge']
+    styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
+    st.dataframe(styled_before, use_container_width=True)
 
 
 # # Fonction pour afficher toutes les variables de session state

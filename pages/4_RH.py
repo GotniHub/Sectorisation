@@ -61,13 +61,16 @@ def load_stores_from_db():
 #     return pd.DataFrame()
 
 # Charger les données
-managers = load_managers_from_db()
-stores = load_stores_from_db()
+managers_original = load_managers_from_db()
+stores_original = load_stores_from_db()
 
-# Charger les données
-managers_original = managers.copy()
-stores_original = stores.copy()
+# 👇 Ajoute ici :
+if 'managers_optimized' in st.session_state:
+    managers = st.session_state.managers_optimized.copy()
+else:
+    managers = managers_original.copy()
 
+stores = stores_original.copy()
 
 if managers.empty or stores.empty:
     st.warning("⚠️ Aucune donnée n'a été trouvée dans la base de données.")
