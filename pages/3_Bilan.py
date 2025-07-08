@@ -34,6 +34,7 @@ def load_stores_from_db():
 
 managers_original = load_managers_from_db()
 stores_original = load_stores_from_db()
+print(stores_original)
 # Harmonisation des noms de colonnes (standardisation)
 stores_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in stores_original.columns]
 managers_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in managers_original.columns]
@@ -507,8 +508,8 @@ with left_column:
     st.write("")
     st.subheader("Carte Sans Optimisation 🗺️")
     # Display the map in Streamlit
-    # # Toujours initialiser la carte, même si elle est vide
-    map = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
+    # # # Toujours initialiser la carte, même si elle est vide
+    # map = folium.Map(location=[46.603354, 1.888334], zoom_start=6)
 
     # Ton code d'ajout de markers ou de calques vient ici
     # (ajoute les markers uniquement si selected_sector ou les données sont valides)

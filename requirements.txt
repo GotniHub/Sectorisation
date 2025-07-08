@@ -12,4 +12,5 @@ streamlit-option-menu
 openpyxl
 plotly
 googlemaps
+sshtunnel
 #test

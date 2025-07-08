@@ -1,6 +1,18 @@
 
 import streamlit as st
 import pymysql
+from sshtunnel import SSHTunnelForwarder
+
+with SSHTunnelForwarder(
+                 ('DataAdventAfrica.mysql.pythonanywhere-services.com', 3306),
+                 ssh_password="DataAdventPlusAfrica2025.",
+                 ssh_username="DataAdventAfrica",
+                 remote_bind_address=('127.0.0.1', 3306)) as server:
+                    conn = pymysql.connector.connect(host='127.0.0.1',
+                                   port=server.local_bind_port,
+                                   user='DataAdventAfrica',
+                                   passwd='advent2025admin',
+                                   db='DataAdventAfrica$secto')
 
 
 def get_connection():
@@ -18,6 +30,22 @@ def get_connection():
     except pymysql.MySQLError as err:
         st.error(f"❌ Erreur de connexion à la base de données : {err}")
         return None
+    
+# def get_connection():
+#     try:
+#         conn = pymysql.connect(
+#             host=st.secrets["db_host"],
+#             port=int(st.secrets["db_port"]),
+#             user=st.secrets["db_user"],
+#             password=st.secrets["db_password"],
+#             database=st.secrets["db_name"],
+#             charset='utf8mb4',
+#             cursorclass=pymysql.cursors.DictCursor
+#         )
+#         return conn
+#     except pymysql.MySQLError as err:
+#         st.error(f"❌ Erreur de connexion à la base de données : {err}")
+#         return None
 
 # def get_connection():
 #     try:
@@ -120,8 +148,8 @@ def check_table_empty(table_name="rh"):
     try:
         query = f"SELECT COUNT(*) FROM {table_name};"
         cursor.execute(query)
-        row_count = cursor.fetchone()["COUNT(*)"]
-        # row_count = cursor.fetchone()[0] 
+        # row_count = cursor.fetchone()["COUNT(*)"]
+        row_count = cursor.fetchone()[0] 
         return row_count
     except Exception as e:
         st.error(f"❌ Erreur lors de la vérification de la table '{table_name}' : {e}")
