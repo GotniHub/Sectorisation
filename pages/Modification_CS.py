@@ -2,6 +2,12 @@ import streamlit as st
 import pandas as pd
 from db_connection import get_connection, update_database, check_table_empty
 
+def anonymiser_noms(df):
+    df = df.copy()
+    df['Nom'] = 'Nom_' + df.index.astype(str)
+    df['Prenom'] = 'Prenom_' + df.index.astype(str)
+    return df
+
 def load_data_from_database():
     """Charge les données actuelles depuis la base de données MySQL (table RH)."""
     conn = get_connection()
@@ -75,9 +81,11 @@ def main():
 
     # 📌 Charger les données de la base
     df_existing = load_data_from_database()
+    
     if df_existing is None:
         return
-    
+    # 🔒 Anonymiser les noms/prénoms
+    df_existing = anonymiser_noms(df_existing)
     # --- 🎛️ TOGGLE AFFICHAGE FILTRES ---
     with st.sidebar:
         st.markdown("## 🔍 Filtres")
