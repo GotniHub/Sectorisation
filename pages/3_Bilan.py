@@ -62,8 +62,14 @@ def load_stores_from_db():
         return df
     return pd.DataFrame()
 
-managers_original = load_managers_from_db()
-stores_original = load_stores_from_db()
+# Charger les données
+managers = load_managers_from_db()
+stores = load_stores_from_db()
+
+# Charger les données
+managers_original = managers.copy()
+stores_original = stores.copy()
+
 print(stores_original)
 # Harmonisation des noms de colonnes (standardisation)
 stores_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in stores_original.columns]
