@@ -3,21 +3,21 @@ import streamlit as st
 import pymysql
 
 
-def get_connection():
-    try:
-        conn = pymysql.connect(
-            host=st.secrets["db_host"],
-            port=int(st.secrets["db_port"]),
-            user=st.secrets["db_user"],
-            password=st.secrets["db_password"],
-            database=st.secrets["db_name"],
-            charset='utf8mb4',
-            cursorclass=pymysql.cursors.DictCursor
-        )
-        return conn
-    except pymysql.MySQLError as err:
-        st.error(f"❌ Erreur de connexion à la base de données : {err}")
-        return None
+# def get_connection():
+#     try:
+#         conn = pymysql.connect(
+#             host=st.secrets["db_host"],
+#             port=int(st.secrets["db_port"]),
+#             user=st.secrets["db_user"],
+#             password=st.secrets["db_password"],
+#             database=st.secrets["db_name"],
+#             charset='utf8mb4',
+#             cursorclass=pymysql.cursors.DictCursor
+#         )
+#         return conn
+#     except pymysql.MySQLError as err:
+#         st.error(f"❌ Erreur de connexion à la base de données : {err}")
+#         return None
     
 # def get_connection():
 #     try:
@@ -35,26 +35,26 @@ def get_connection():
 #         st.error(f"❌ Erreur de connexion à la base de données : {err}")
 #         return None
 
-# def get_connection():
-#     try:
-#         print("Tentative de connexion à MySQL...")  # DEBUG
-#         conn = pymysql.connect(
-#             host="localhost",
-#             user="root",
-#             password="",  # XAMPP n'a pas de mot de passe par défaut
-#             database="secto",
-#             port=3306
-#         )
-#         print("✅ Connexion réussie !")  # DEBUG
-#         return conn
-#     except pymysql.Error as err:
-#         print(f"❌ ERREUR MYSQL : {err}")  # DEBUG
-#         st.error(f"❌ Erreur de connexion MySQL : {err}")
-#         return None
-#     except Exception as e:
-#         print(f"❌ ERREUR INATTENDUE : {e}")  # DEBUG
-#         st.error(f"❌ Erreur inattendue : {e}")
-#         return None
+def get_connection():
+    try:
+        print("Tentative de connexion à MySQL...")  # DEBUG
+        conn = pymysql.connect(
+            host="localhost",
+            user="root",
+            password="",  # XAMPP n'a pas de mot de passe par défaut
+            database="secto",
+            port=3306
+        )
+        print("✅ Connexion réussie !")  # DEBUG
+        return conn
+    except pymysql.Error as err:
+        print(f"❌ ERREUR MYSQL : {err}")  # DEBUG
+        st.error(f"❌ Erreur de connexion MySQL : {err}")
+        return None
+    except Exception as e:
+        print(f"❌ ERREUR INATTENDUE : {e}")  # DEBUG
+        st.error(f"❌ Erreur inattendue : {e}")
+        return None
    
 def clear_table_RH():
     """Vide la table 'rh' en supprimant toutes les données."""
@@ -136,8 +136,8 @@ def check_table_empty(table_name="rh"):
     try:
         query = f"SELECT COUNT(*) FROM {table_name};"
         cursor.execute(query)
-        row_count = cursor.fetchone()["COUNT(*)"]
-        # row_count = cursor.fetchone()[0] 
+        # row_count = cursor.fetchone()["COUNT(*)"]
+        row_count = cursor.fetchone()[0] 
         return row_count
     except Exception as e:
         st.error(f"❌ Erreur lors de la vérification de la table '{table_name}' : {e}")

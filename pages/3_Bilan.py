@@ -587,10 +587,15 @@ with right_column:
         temps_route = 25000
 
         charge_per_sector_new['New_Charge'] = ((charge_per_sector_new['New_Temps passé clientèle'] + temps_route) / charge_per_sector_new['Temps terrain effectif']) * 100
-        return charge_per_sector_new[['Code_secteur', 'New_Charge']]    
+        return charge_per_sector_new[['Code_secteur', 'New_Charge']]  
+    
+    if 'optimized_managers_kmeans' in st.session_state:
+        managers_optimized_source = st.session_state.optimized_managers_kmeans.copy()
+    else:
+        managers_optimized_source = managers.copy()  # fallback  
     # Nouveau calcul des visites après optimisation
     optimized_visits_per_sector = stores.groupby('Code_secteur')['Frequence'].sum().reset_index(name='New_Visites nécessaires')
-    st.session_state.managers_optimized = pd.merge(managers, optimized_visits_per_sector, on='Code_secteur', how='left', suffixes=('', '_new'))
+    st.session_state.managers_optimized = pd.merge(managers_optimized_source, optimized_visits_per_sector, on='Code_secteur', how='left', suffixes=('', '_new'))
     st.session_state.managers_optimized['New_Visites nécessaires'].fillna(0, inplace=True)
 
     optimized_ca_potentiel_per_sector = stores.groupby('Code_secteur')['Potentiel'].sum().reset_index(name='New_CA Potentiel')
