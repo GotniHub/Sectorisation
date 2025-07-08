@@ -867,11 +867,14 @@ col_before, col_after = st.columns(2)
 # 🔁 Convertir Code_secteur en str pour éviter les mismatches de type
 managers_display['Code_secteur'] = managers_display['Code_secteur'].astype(str)
 optimized_display['Code_secteur'] = optimized_display['Code_secteur'].astype(str)
-st.session_state.selected_sector = [str(s) for s in st.session_state.selected_sector]
+
+# ✅ NE PAS RÉÉCRIRE dans session_state : on copie
+selected_sector_str = [str(s) for s in st.session_state.selected_sector]
 
 # ✅ Appliquer le filtre sélectionné
-filtered_managers_display = managers_display[managers_display['Code_secteur'].isin(st.session_state.selected_sector)]
-filtered_optimized_display = optimized_display[optimized_display['Code_secteur'].isin(st.session_state.selected_sector)]
+filtered_managers_display = managers_display[managers_display['Code_secteur'].isin(selected_sector_str)]
+filtered_optimized_display = optimized_display[optimized_display['Code_secteur'].isin(selected_sector_str)]
+
 
 # 🔍 Optionnel : debug temporaire
 # st.write("Secteurs sélectionnés :", st.session_state.selected_sector)
