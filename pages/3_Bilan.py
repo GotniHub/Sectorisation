@@ -869,13 +869,14 @@ filtered_optimized_display = optimized_display[optimized_display['Code_secteur']
 
 with col_before:
     st.markdown("### Avant Optimisation")
-    styled_after = filtered_optimized_display.style.applymap(color_charge, subset=['Charge'])
-    st.dataframe(styled_after, use_container_width=True)
+    styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
+    st.dataframe(styled_before, use_container_width=True)
 
 with col_after:
     st.markdown("### Après Optimisation")
-    styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
-    st.dataframe(styled_before, use_container_width=True)
+    styled_after = filtered_optimized_display.style.applymap(color_charge, subset=['Charge'])
+    st.dataframe(styled_after, use_container_width=True)
+
 
 
 # # Fonction pour afficher toutes les variables de session state
