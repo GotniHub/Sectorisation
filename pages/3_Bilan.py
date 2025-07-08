@@ -865,8 +865,9 @@ optimized_display['Charge'] = optimized_display['Charge'].apply(format_charge)
 col_before, col_after = st.columns(2)
 
 # 🔁 Convertir Code_secteur en str pour éviter les mismatches de type
-managers_display['Code_secteur'] = managers_display['Code_secteur'].astype(str)
-optimized_display['Code_secteur'] = optimized_display['Code_secteur'].astype(str)
+optimized_display['PDV affectés'] = pd.to_numeric(optimized_display['PDV affectés'], errors='coerce').fillna(0).astype(int)
+optimized_display['Visites nécessaires'] = pd.to_numeric(optimized_display['Visites nécessaires'], errors='coerce').fillna(0).astype(int)
+
 
 # ✅ NE PAS RÉÉCRIRE dans session_state : on copie
 selected_sector_str = [str(s) for s in st.session_state.selected_sector]
