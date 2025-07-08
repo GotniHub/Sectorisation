@@ -27,7 +27,7 @@ def load_managers_from_db():
 def load_stores_from_db():
     conn = get_connection()
     if conn:
-        df = pd.read_sql("SELECT * FROM pdv", conn)
+        df = pd.read_sql("SELECT * FROM pdv FORMAT TabSeparatedWithNamesAndTypes", conn)
         conn.close()
         return df
     return pd.DataFrame()
