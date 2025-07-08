@@ -16,13 +16,30 @@ st.markdown("<div class='title'><b>Tableau de Bord - Analyse et Bilan de la Perf
 st.logo("LOGO.png", icon_image="Logom.png")
 
 
+# def load_managers_from_db():
+#     conn = get_connection()
+#     if conn:
+#         df = pd.read_sql("SELECT * FROM rh", conn)
+#         conn.close()
+#         return df
+#     return pd.DataFrame()
 def load_managers_from_db():
     conn = get_connection()
     if conn:
-        df = pd.read_sql("SELECT * FROM rh", conn)
-        conn.close()
-        return df
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM rh")
+            columns = [col[0] for col in cursor.description]
+            data = cursor.fetchall()
+            df = pd.DataFrame(data, columns=columns)
+            cursor.close()
+            conn.close()
+            return df
+        except Exception as e:
+            print(f"Erreur lors du chargement de la table RH : {e}")
+            conn.close()
     return pd.DataFrame()
+
 
 # def load_stores_from_db():
 #     conn = get_connection()
