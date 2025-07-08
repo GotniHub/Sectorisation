@@ -71,16 +71,16 @@ managers_original.columns = [col.strip().replace(" ", "_").replace("é", "e").re
 managers_original = load_managers_from_db()
 stores_original = load_stores_from_db()
 
-# # 🔍 DEBUG : Affichage des données brutes
-# st.subheader("📦 Données brutes PDV")
-# st.dataframe(stores_original)
+# 🔍 DEBUG : Affichage des données brutes
+st.subheader("📦 Données brutes PDV")
+st.dataframe(stores_original)
 
-# st.subheader("👤 Données brutes RH")
-# st.dataframe(managers_original)
+st.subheader("👤 Données brutes RH")
+st.dataframe(managers_original)
 
-# # Optionnel : afficher les colonnes pour debug
-# st.write("🧮 Colonnes PDV :", stores_original.columns.tolist())
-# st.write("🧮 Colonnes RH :", managers_original.columns.tolist())
+# Optionnel : afficher les colonnes pour debug
+st.write("🧮 Colonnes PDV :", stores_original.columns.tolist())
+st.write("🧮 Colonnes RH :", managers_original.columns.tolist())
 
 # Harmonisation des noms de colonnes (standardisation)
 stores_original.columns = [col.strip().replace(" ", "_").replace("é", "e").replace("è", "e") for col in stores_original.columns]
@@ -193,14 +193,14 @@ total_ca_potentiel = float(ca_potentiel_per_sector['CA Potentiel'].sum())
 
 # Calcul du temps passé clientèle par secteur
 # DEBUG : Afficher les colonnes du DataFrame stores
-# st.write("Colonnes disponibles :", stores.columns.tolist())
+st.write("Colonnes disponibles :", stores.columns.tolist())
 # temps_clientele_per_sector = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='Temps passé clientèle')
 # TEST DEPLOIEMENT 
 temps_clientele_per_sector = stores.copy()
 temps_clientele_per_sector['Poids'] = temps_clientele_per_sector['Temps'] * temps_clientele_per_sector['Frequence']
 temps_clientele_per_sector = temps_clientele_per_sector.groupby('Code_secteur')['Poids'].sum().reset_index(name='Temps passé clientèle')
 ###############
-# st.write("Colonnes managers :", managers.columns.tolist())
+st.write("Colonnes managers :", managers.columns.tolist())
 
 # Calcul du temps terrain effectif par secteur pour chaque manager
 temps_terrain_effectif_per_manager = (managers['Nb_jour_terrain_par_an'] * managers['Nb_heure_par_jour'] * 60).reset_index(name='Temps terrain effectif')
@@ -798,94 +798,84 @@ with right_column:
 
 st.subheader("Données détaillées générales")
 
-# ✅ Colonnes à afficher
+# ✅ 1. Colonnes à afficher
 columns_to_display = ['Code_secteur', 'PDV affectés', 'Visites nécessaires', 'Charge']
 optimized_columns_to_display = ['Code_secteur', 'Nom', 'Prenom', 'Adresse', 'PDV affectés', 'Visites nécessaires', 'Charge']
 
-# ✅ Copie propre des données
 managers_clean = st.session_state.managers_original.copy()
-stores_copy = stores.copy()
 
-# ✅ Harmonisation des clés de jointure
-managers_clean['Code_secteur'] = managers_clean['Code_secteur'].astype(str).str.strip()
-stores_copy['Code_secteur'] = stores_copy['Code_secteur'].astype(str).str.strip()
-
-# ✅ Ajouter les colonnes nécessaires (PDV et Visites)
-stores_per_sector = stores_copy.groupby('Code_secteur').size().reset_index(name='PDV affectés')
+# Ajouter les colonnes nécessaires
+stores_per_sector = stores.groupby('Code_secteur').size().reset_index(name='PDV affectés')
 managers_clean = pd.merge(managers_clean, stores_per_sector, on='Code_secteur', how='left')
 
-visites_par_secteur = stores_copy.groupby('Code_secteur')['Frequence'].sum().reset_index(name='Visites nécessaires')
+visites_par_secteur = stores.groupby('Code_secteur')['Frequence'].sum().reset_index(name='Visites nécessaires')
 managers_clean = pd.merge(managers_clean, visites_par_secteur, on='Code_secteur', how='left')
 
-# ✅ Nettoyage et conversion des types
 managers_clean['PDV affectés'].fillna(0, inplace=True)
 managers_clean['Visites nécessaires'].fillna(0, inplace=True)
 managers_clean['PDV affectés'] = managers_clean['PDV affectés'].astype(int)
 managers_clean['Visites nécessaires'] = managers_clean['Visites nécessaires'].astype(int)
 
-# ✅ Calcul de la charge
-if 'Temps' in stores_copy.columns and 'Frequence' in stores_copy.columns:
-    stores_copy['Poids'] = pd.to_numeric(stores_copy['Temps'], errors='coerce') * pd.to_numeric(stores_copy['Frequence'], errors='coerce')
-    temps_clientele_per_sector = stores_copy.groupby('Code_secteur')['Poids'].sum().reset_index(name='Temps passé clientèle')
+# Calcul de la charge
+# temps_clientele_per_sector = stores.groupby('Code_secteur').apply(lambda x: (x['Temps'] * x['Frequence']).sum()).reset_index(name='Temps passé clientèle')
+if 'Temps' in stores.columns and 'Frequence' in stores.columns:
+    stores['Poids'] = pd.to_numeric(stores['Temps'], errors='coerce') * pd.to_numeric(stores['Frequence'], errors='coerce')
+    temps_clientele_per_sector = stores.groupby('Code_secteur')['Poids'].sum().reset_index(name='Temps passé clientèle')
 else:
     temps_clientele_per_sector = pd.DataFrame(columns=['Code_secteur', 'Temps passé clientèle'])
 
+# charge_calc = pd.merge(temps_clientele_per_sector, managers_clean[['Code_secteur', 'Nb_jour_terrain_par_an', 'Nb_heure_par_jour']], on='Code_secteur', how='left')
 cols_needed = ['Code_secteur', 'Nb_jour_terrain_par_an', 'Nb_heure_par_jour']
 missing_cols = [col for col in cols_needed if col not in managers_clean.columns]
 
 if missing_cols:
     st.error(f"Colonnes manquantes dans managers_clean : {missing_cols}")
-    charge_calc = pd.DataFrame()
+    charge_calc = pd.DataFrame()  # ou None selon ton app
 else:
-    charge_calc = pd.merge(temps_clientele_per_sector, managers_clean[cols_needed], on='Code_secteur', how='left')
-    charge_calc['Temps terrain effectif'] = charge_calc['Nb_jour_terrain_par_an'] * charge_calc['Nb_heure_par_jour'] * 60
-    charge_calc['Charge'] = ((charge_calc['Temps passé clientèle'] + 25000) / charge_calc['Temps terrain effectif']) * 100
-    managers_clean = pd.merge(managers_clean, charge_calc[['Code_secteur', 'Charge']], on='Code_secteur', how='left')
+    charge_calc = pd.merge(
+        temps_clientele_per_sector,
+        managers_clean[cols_needed],
+        on='Code_secteur',
+        how='left'
+    )
 
-# ✅ Formatage final
+charge_calc['Temps terrain effectif'] = charge_calc['Nb_jour_terrain_par_an'] * charge_calc['Nb_heure_par_jour'] * 60
+charge_calc['Charge'] = ((charge_calc['Temps passé clientèle'] + 25000) / charge_calc['Temps terrain effectif']) * 100
+managers_clean = pd.merge(managers_clean, charge_calc[['Code_secteur', 'Charge']], on='Code_secteur', how='left')
 managers_clean['Charge'] = managers_clean['Charge'].apply(format_charge)
+
+
 managers_display = managers_clean[columns_to_display]
 
-# ✅ Données optimisées
+# ✅ 3. Préparer les données optimisées
 optimized_display = st.session_state.managers_optimized.copy()
-optimized_display['Code_secteur'] = optimized_display['Code_secteur'].astype(str).str.strip()
+
+
 optimized_display = optimized_display[optimized_columns_to_display]
+#optimized_display['Charge'] = optimized_display['Charge'].apply(format_charge)
 optimized_display['Charge'] = optimized_display['Charge'].apply(format_charge)
+# Supprimer les décimales
 optimized_display['PDV affectés'] = optimized_display['PDV affectés'].astype(int)
 optimized_display['Visites nécessaires'] = optimized_display['Visites nécessaires'].astype(int)
 
-# ✅ Sélection et fallback
-managers_display['Code_secteur'] = managers_display['Code_secteur'].astype(str)
-selected_sector_str = [str(s) for s in st.session_state.selected_sector] if 'selected_sector' in st.session_state else []
-
-if selected_sector_str:
-    filtered_managers_display = managers_display[managers_display['Code_secteur'].isin(selected_sector_str)]
-    filtered_optimized_display = optimized_display[optimized_display['Code_secteur'].isin(selected_sector_str)]
-else:
-    filtered_managers_display = managers_display.copy()
-    filtered_optimized_display = optimized_display.copy()
-
-# 🔄 Si toujours vide, montrer tout (fallback sécurité)
-if filtered_managers_display.empty:
-    filtered_managers_display = managers_display.copy()
-if filtered_optimized_display.empty:
-    filtered_optimized_display = optimized_display.copy()
-
-# ✅ Affichage côte à côte
+# Formater la charge
+optimized_display['Charge'] = optimized_display['Charge'].apply(format_charge)
+# ✅ 4. Affichage côte à côte
 col_before, col_after = st.columns(2)
+
+# ✅ Appliquer le filtre sélectionné
+filtered_managers_display = managers_display[managers_display['Code_secteur'].isin(st.session_state.selected_sector)]
+filtered_optimized_display = optimized_display[optimized_display['Code_secteur'].isin(st.session_state.selected_sector)]
 
 with col_before:
     st.markdown("### Avant Optimisation")
-    styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
-    st.dataframe(styled_before, use_container_width=True)
-
-with col_after:
-    st.markdown("### Après Optimisation")
     styled_after = filtered_optimized_display.style.applymap(color_charge, subset=['Charge'])
     st.dataframe(styled_after, use_container_width=True)
 
-
-
+with col_after:
+    st.markdown("### Après Optimisation")
+    styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
+    st.dataframe(styled_before, use_container_width=True)
 
 
 # # Fonction pour afficher toutes les variables de session state
