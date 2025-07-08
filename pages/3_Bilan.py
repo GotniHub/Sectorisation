@@ -864,17 +864,24 @@ optimized_display['Charge'] = optimized_display['Charge'].apply(format_charge)
 # ✅ 4. Affichage côte à côte
 col_before, col_after = st.columns(2)
 
-# 🔁 Convertir Code_secteur en str pour éviter les mismatches de type
-optimized_display['PDV affectés'] = pd.to_numeric(optimized_display['PDV affectés'], errors='coerce').fillna(0).astype(int)
-optimized_display['Visites nécessaires'] = pd.to_numeric(optimized_display['Visites nécessaires'], errors='coerce').fillna(0).astype(int)
+# 🔁 Convertir les codes en chaînes pour éviter les problèmes de type
+managers_display['Code_secteur'] = managers_display['Code_secteur'].astype(str)
+optimized_display['Code_secteur'] = optimized_display['Code_secteur'].astype(str)
 
+# 🛡️ Si rien n'est sélectionné ou que le filtre échoue, afficher tout
+if 'selected_sector' not in st.session_state or not st.session_state.selected_sector:
+    filtered_managers_display = managers_display.copy()
+    filtered_optimized_display = optimized_display.copy()
+else:
+    selected_sector_str = [str(s) for s in st.session_state.selected_sector]
+    filtered_managers_display = managers_display[managers_display['Code_secteur'].isin(selected_sector_str)]
+    filtered_optimized_display = optimized_display[optimized_display['Code_secteur'].isin(selected_sector_str)]
 
-# ✅ NE PAS RÉÉCRIRE dans session_state : on copie
-selected_sector_str = [str(s) for s in st.session_state.selected_sector]
-
-# ✅ Appliquer le filtre sélectionné
-filtered_managers_display = managers_display[managers_display['Code_secteur'].isin(selected_sector_str)]
-filtered_optimized_display = optimized_display[optimized_display['Code_secteur'].isin(selected_sector_str)]
+# 🔄 Si les tableaux sont toujours vides malgré tout, afficher tout (sécurité)
+if filtered_managers_display.empty:
+    filtered_managers_display = managers_display.copy()
+if filtered_optimized_display.empty:
+    filtered_optimized_display = optimized_display.copy()
 
 
 # 🔍 Optionnel : debug temporaire
@@ -884,19 +891,14 @@ filtered_optimized_display = optimized_display[optimized_display['Code_secteur']
 
 with col_before:
     st.markdown("### Avant Optimisation")
-    if filtered_managers_display.empty:
-        st.warning("Aucune donnée trouvée dans les données *avant optimisation* pour les secteurs sélectionnés.")
-    else:
-        styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
-        st.dataframe(styled_before, use_container_width=True)
+    styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
+    st.dataframe(styled_before, use_container_width=True)
 
 with col_after:
     st.markdown("### Après Optimisation")
-    if filtered_optimized_display.empty:
-        st.warning("Aucune donnée trouvée dans les données *après optimisation* pour les secteurs sélectionnés.")
-    else:
-        styled_after = filtered_optimized_display.style.applymap(color_charge, subset=['Charge'])
-        st.dataframe(styled_after, use_container_width=True)
+    styled_after = filtered_optimized_display.style.applymap(color_charge, subset=['Charge'])
+    st.dataframe(styled_after, use_container_width=True)
+
 
 
 
