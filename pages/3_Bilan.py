@@ -861,21 +861,38 @@ optimized_display['Visites nécessaires'] = optimized_display['Visites nécessai
 # Formater la charge
 optimized_display['Charge'] = optimized_display['Charge'].apply(format_charge)
 # ✅ 4. Affichage côte à côte
+# ✅ 4. Affichage côte à côte
 col_before, col_after = st.columns(2)
+
+# 🔁 Convertir Code_secteur en str pour éviter les mismatches de type
+managers_display['Code_secteur'] = managers_display['Code_secteur'].astype(str)
+optimized_display['Code_secteur'] = optimized_display['Code_secteur'].astype(str)
+st.session_state.selected_sector = [str(s) for s in st.session_state.selected_sector]
 
 # ✅ Appliquer le filtre sélectionné
 filtered_managers_display = managers_display[managers_display['Code_secteur'].isin(st.session_state.selected_sector)]
 filtered_optimized_display = optimized_display[optimized_display['Code_secteur'].isin(st.session_state.selected_sector)]
 
+# 🔍 Optionnel : debug temporaire
+# st.write("Secteurs sélectionnés :", st.session_state.selected_sector)
+# st.write("Secteurs présents avant optimisation :", managers_display['Code_secteur'].unique())
+# st.write("Secteurs présents après optimisation :", optimized_display['Code_secteur'].unique())
+
 with col_before:
     st.markdown("### Avant Optimisation")
-    styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
-    st.dataframe(styled_before, use_container_width=True)
+    if filtered_managers_display.empty:
+        st.warning("Aucune donnée trouvée dans les données *avant optimisation* pour les secteurs sélectionnés.")
+    else:
+        styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
+        st.dataframe(styled_before, use_container_width=True)
 
 with col_after:
     st.markdown("### Après Optimisation")
-    styled_after = filtered_optimized_display.style.applymap(color_charge, subset=['Charge'])
-    st.dataframe(styled_after, use_container_width=True)
+    if filtered_optimized_display.empty:
+        st.warning("Aucune donnée trouvée dans les données *après optimisation* pour les secteurs sélectionnés.")
+    else:
+        styled_after = filtered_optimized_display.style.applymap(color_charge, subset=['Charge'])
+        st.dataframe(styled_after, use_container_width=True)
 
 
 
