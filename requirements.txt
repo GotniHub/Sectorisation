@@ -16,4 +16,5 @@ fpdf
 selenium
 webdriver-manager
 streamlit-folium
+shapely
 #test
