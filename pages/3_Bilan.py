@@ -895,6 +895,7 @@ with col_after:
     styled_before = filtered_managers_display.style.applymap(color_charge, subset=['Charge'])
     st.dataframe(styled_before, use_container_width=True)
 
+st.caption("ℹ️ Les noms des commerciaux ont été anonymisés pour garantir la confidentialité.")
 
 # # Fonction pour afficher toutes les variables de session state
 # def display_session_states():

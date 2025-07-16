@@ -12,4 +12,7 @@ streamlit-option-menu
 openpyxl
 plotly
 googlemaps
+fpdf
+selenium
+webdriver-manager
 #test
