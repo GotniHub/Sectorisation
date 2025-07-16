@@ -375,38 +375,38 @@ with col2:
     pie_chart_fig = create_pie_chart()
     st.pyplot(pie_chart_fig)
 
-    # Ajouter des boutons pour exporter les graphiques
-    if st.button('Exporter le graphique à barres'):
-        bar_chart_fig = create_bar_chart()
-        bar_chart_fig.savefig('bar_chart.png', bbox_inches='tight')
-        st.success('Le graphique à barres a été exporté avec succès !')
-        with open('bar_chart.png', 'rb') as file:
-            btn = st.download_button(
-                label="Télécharger le graphique à barres",
-                data=file,
-                file_name="bar_chart.png",
-                mime="image/png"
-            )
+    # # Ajouter des boutons pour exporter les graphiques
+    # if st.button('Exporter le graphique à barres'):
+    #     bar_chart_fig = create_bar_chart()
+    #     bar_chart_fig.savefig('bar_chart.png', bbox_inches='tight')
+    #     st.success('Le graphique à barres a été exporté avec succès !')
+    #     with open('bar_chart.png', 'rb') as file:
+    #         btn = st.download_button(
+    #             label="Télécharger le graphique à barres",
+    #             data=file,
+    #             file_name="bar_chart.png",
+    #             mime="image/png"
+    #         )
 
-    if st.button('Exporter le graphique circulaire'):
-        pie_chart_fig.savefig('pie_chart.png')
-        st.success('Le graphique circulaire a été exporté avec succès !')
-        with open('pie_chart.png', 'rb') as file:
-            btn = st.download_button(
-                label="Télécharger le graphique circulaire",
-                data=file,
-                file_name="pie_chart.png",
-                mime="image/png"
-            )
-    if st.button('Générer le rapport PDF'):
-        pdf_data = generate_pdf()
-        st.success('Le rapport PDF a été généré avec succès !')
-        st.download_button(
-            label="Télécharger le rapport PDF",
-            data=pdf_data,
-            file_name="rapport_analyse_sectorielle.pdf",
-            mime="application/pdf"
-        )
+    # if st.button('Exporter le graphique circulaire'):
+    #     pie_chart_fig.savefig('pie_chart.png')
+    #     st.success('Le graphique circulaire a été exporté avec succès !')
+    #     with open('pie_chart.png', 'rb') as file:
+    #         btn = st.download_button(
+    #             label="Télécharger le graphique circulaire",
+    #             data=file,
+    #             file_name="pie_chart.png",
+    #             mime="image/png"
+    #         )
+    # if st.button('Générer le rapport PDF'):
+    #     pdf_data = generate_pdf()
+    #     st.success('Le rapport PDF a été généré avec succès !')
+    #     st.download_button(
+    #         label="Télécharger le rapport PDF",
+    #         data=pdf_data,
+    #         file_name="rapport_analyse_sectorielle.pdf",
+    #         mime="application/pdf"
+    #     )
 
 
 # Ajouter un expander pour afficher les détails des magasins par région
