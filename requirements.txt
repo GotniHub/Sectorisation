@@ -15,4 +15,5 @@ googlemaps
 fpdf
 selenium
 webdriver-manager
+streamlit-folium
 #test
